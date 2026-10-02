@@ -1,0 +1,46 @@
+<main class="workspace">
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Portfolio Project 01</p>
+      <h1>MCP Document Workspace</h1>
+    </div>
+    <span class="status">MCP server ready</span>
+  </header>
+
+  <section class="layout">
+    <aside class="panel documents">
+      <h2>Resources</h2>
+      @for (document of documents; track document.id) {
+        <button
+          class="document"
+          [class.active]="document.id === selectedId()"
+          (click)="selectDocument(document.id)">
+          <strong>{{ document.title }}</strong>
+          <span>{{ document.id }}</span>
+        </button>
+      }
+    </aside>
+
+    <article class="panel preview">
+      <p class="eyebrow">docs://documents/{{ selected().id }}</p>
+      <h2>{{ selected().title }}</h2>
+      <p class="content">{{ selected().content }}</p>
+      <div class="actions">
+        <button>Summarize</button>
+        <button>Format</button>
+        <button class="primary">Edit document</button>
+      </div>
+    </article>
+
+    <aside class="panel activity">
+      <h2>MCP activity</h2>
+      <div class="event">
+        <span class="dot"></span>
+        <div>
+          <strong>Resource selected</strong>
+          <p>{{ selected().id }}</p>
+        </div>
+      </div>
+    </aside>
+  </section>
+</main>

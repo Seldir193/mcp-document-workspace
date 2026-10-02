@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "document-workspace"
+version = "0.1.0"
+description = "MCP server exposing a small document workspace: resources, a tool, and prompts."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=2.2,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "anyio>=4",
+    "ruff>=0.6",
+]
+
+[project.scripts]
+document-workspace = "document_workspace.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/document_workspace"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
