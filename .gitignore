@@ -1,16 +1,26 @@
-.idea/
-.vscode/
-.DS_Store
-*.log
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+build/
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+coverage/
+
+# Environment and secrets
 .env
 .env.*
 !.env.example
 
-backend/.venv/
-backend/.pytest_cache/
-backend/**/__pycache__/
-backend/**/*.egg-info/
-
-frontend/node_modules/
-frontend/dist/
-frontend/.angular/
+# Editors and OS
+*.log
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

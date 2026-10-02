@@ -1,49 +1,67 @@
 # MCP Document Workspace
 
-A compact portfolio project that demonstrates Model Context Protocol primitives in a real document workflow.
+A small application that demonstrates practical use of the
+[Model Context Protocol](https://modelcontextprotocol.io): a Python MCP server
+exposes documents as resources, an edit tool, and prompts, with an Angular
+frontend on top.
 
-## What it demonstrates
-- Direct MCP resources
-- Templated MCP resources
-- MCP tools
-- Reusable MCP prompts
-- Angular document workspace UI
-- Automated backend and frontend tests
+**Status: phase 1 (foundation).** The MCP server is working and tested. The
+frontend is a static shell; connecting it to the server is phase 2.
 
-## Stack
-- Angular 20 + TypeScript + SCSS
-- Python 3.14
-- MCP Python SDK 2.x
-- Pytest
+## What the server exposes
 
-## Current MCP contract
-- Resource: docs://documents
-- Resource template: docs://documents/{doc_id}
-- Tool: edit_document
-- Prompt: summarize
-- Prompt: format
+| Primitive         | Identifier                  | Purpose                                 |
+| ----------------- | --------------------------- | --------------------------------------- |
+| Resource          | `docs://documents`          | JSON index of documents                 |
+| Resource template | `docs://documents/{doc_id}` | Content of one document                 |
+| Tool              | `edit_document`             | Replace one exact passage of a document |
+| Prompt            | `summarize`                 | Summarize a document                    |
+| Prompt            | `format`                    | Reformat a document as clean Markdown   |
+
+See [docs/architecture.md](docs/architecture.md) for the design and diagram.
+
+## Repository layout
+
+```
+backend/    Python package: MCP server, document store, tests
+frontend/   Angular standalone app (SCSS, routing)
+docs/       Architecture notes
+```
+
+## Prerequisites
+
+- Python 3.11+
+- Node.js 20.19+, 22.12+ or 24+
 
 ## Backend
-From backend:
 
-    .\.venv\Scripts\python.exe -m pip install -e ".[dev]"
-    .\.venv\Scripts\python.exe -m pytest -q
-    .\.venv\Scripts\python.exe -m mcp_workspace.server
+```bash
+cd backend
+python -m venv .venv
+# Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
+pip install -e ".[dev]"
+
+pytest                 # run the tests
+document-workspace     # start the MCP server on stdio
+```
+
+To explore the server interactively with the MCP Inspector:
+
+```bash
+npx @modelcontextprotocol/inspector document-workspace
+```
 
 ## Frontend
-From frontend:
 
-    npm install
-    npm run build
-    npm test -- --watch=false --browsers=ChromeHeadless
+```bash
+cd frontend
+npm install
+npm start              # http://localhost:4200
+npm run build
+npm test -- --watch=false --browsers=ChromeHeadless
+```
 
-## Status
-Phase 1 foundation is implemented. The Angular shell currently uses local sample data while the MCP client-to-UI bridge is the next integration step.
+## Roadmap
 
-## Next milestones
-1. Add an MCP client module.
-2. Expose a thin local HTTP bridge for the Angular UI.
-3. Connect resource listing and document reading.
-4. Connect summarize, format and edit actions.
-5. Add activity logging and an MCP Inspector demo.
-6. Add CI and final portfolio screenshots.
+Phase 2: an HTTP API with an MCP client in the backend, the frontend wired to
+it (document list, viewer, prompts, edit, activity log), and Docker setup.

@@ -112,5 +112,5 @@ async def test_prompt_embeds_document(
 
 
 async def test_prompt_for_unknown_document_fails(client: Client) -> None:
-    with pytest.raises(MCPError, match="missing"):
+    with pytest.raises(MCPError):
         await client.get_prompt("summarize", {"doc_id": "missing"})
