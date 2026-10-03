@@ -9,18 +9,22 @@ description = "MCP server exposing a small document workspace: resources, a tool
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "fastapi>=0.118,<1",
     "mcp>=2.2,<3",
+    "uvicorn>=0.35,<1",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8",
     "anyio>=4",
+    "httpx>=0.28",
+    "pytest>=8",
     "ruff>=0.6",
 ]
 
 [project.scripts]
 document-workspace = "document_workspace.__main__:main"
+document-workspace-api = "document_workspace.api_main:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/document_workspace"]

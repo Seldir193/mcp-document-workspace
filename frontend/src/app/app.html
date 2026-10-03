@@ -4,16 +4,23 @@
       <p class="eyebrow">Portfolio Project 01</p>
       <h1>MCP Document Workspace</h1>
     </div>
-    <span class="status">MCP server ready</span>
+    <span class="status" [class.error]="status() === 'error'">
+      {{ status() === 'ready' ? 'MCP server ready' : status() === 'error' ? 'MCP connection error' : 'Connecting…' }}
+    </span>
   </header>
+
+  @if (error()) {
+    <div class="error-banner">{{ error() }}</div>
+  }
 
   <section class="layout">
     <aside class="panel documents">
       <h2>Resources</h2>
-      @for (document of documents; track document.id) {
+      @for (document of documents(); track document.id) {
         <button
           class="document"
-          [class.active]="document.id === selectedId()"
+          [class.active]="document.id === selected()?.id"
+          [disabled]="busy()"
           (click)="selectDocument(document.id)">
           <strong>{{ document.title }}</strong>
           <span>{{ document.id }}</span>
@@ -22,25 +29,53 @@
     </aside>
 
     <article class="panel preview">
-      <p class="eyebrow">docs://documents/{{ selected().id }}</p>
-      <h2>{{ selected().title }}</h2>
-      <p class="content">{{ selected().content }}</p>
-      <div class="actions">
-        <button>Summarize</button>
-        <button>Format</button>
-        <button class="primary">Edit document</button>
-      </div>
+      @if (selected(); as document) {
+        <p class="eyebrow">{{ document.uri }}</p>
+        <h2>{{ document.title }}</h2>
+
+        @if (editing()) {
+          <textarea
+            class="editor"
+            [ngModel]="draft()"
+            (ngModelChange)="draft.set($event)"
+            aria-label="Document content"></textarea>
+          <div class="actions">
+            <button [disabled]="busy()" (click)="cancelEdit()">Cancel</button>
+            <button class="primary" [disabled]="busy()" (click)="saveEdit()">Save via MCP Tool</button>
+          </div>
+        } @else {
+          <pre class="content">{{ document.content }}</pre>
+          <div class="actions">
+            <button [disabled]="busy()" (click)="runPrompt('summarize')">Summarize</button>
+            <button [disabled]="busy()" (click)="runPrompt('format')">Format</button>
+            <button class="primary" [disabled]="busy()" (click)="startEdit()">Edit document</button>
+          </div>
+        }
+
+        @if (promptOutput(); as prompt) {
+          <section class="prompt-output">
+            <p class="eyebrow">MCP Prompt · {{ prompt.name }}</p>
+            <pre>{{ prompt.text }}</pre>
+          </section>
+        }
+      } @else {
+        <p class="muted">Waiting for MCP resources…</p>
+      }
     </article>
 
     <aside class="panel activity">
       <h2>MCP activity</h2>
-      <div class="event">
-        <span class="dot"></span>
-        <div>
-          <strong>Resource selected</strong>
-          <p>{{ selected().id }}</p>
+      @for (entry of activity(); track $index) {
+        <div class="event">
+          <span class="dot"></span>
+          <div>
+            <strong>{{ entry.title }}</strong>
+            <p>{{ entry.detail }}</p>
+          </div>
         </div>
-      </div>
+      } @empty {
+        <p class="muted">No MCP activity yet.</p>
+      }
     </aside>
   </section>
 </main>

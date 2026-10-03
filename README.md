@@ -1,67 +1,109 @@
 # MCP Document Workspace
 
-A small application that demonstrates practical use of the
-[Model Context Protocol](https://modelcontextprotocol.io): a Python MCP server
-exposes documents as resources, an edit tool, and prompts, with an Angular
-frontend on top.
+A compact portfolio application that demonstrates Model Context Protocol primitives through a real Angular-to-MCP workflow.
 
-**Status: phase 1 (foundation).** The MCP server is working and tested. The
-frontend is a static shell; connecting it to the server is phase 2.
+The Python backend exposes documents as MCP resources, a safe edit tool, and reusable prompts. A FastAPI bridge owns an MCP client, and the Angular frontend consumes that bridge over HTTP.
 
-## What the server exposes
+**Status: phase 2 complete.** The frontend now reads and edits real MCP-backed data.
 
-| Primitive         | Identifier                  | Purpose                                 |
-| ----------------- | --------------------------- | --------------------------------------- |
-| Resource          | `docs://documents`          | JSON index of documents                 |
-| Resource template | `docs://documents/{doc_id}` | Content of one document                 |
-| Tool              | `edit_document`             | Replace one exact passage of a document |
-| Prompt            | `summarize`                 | Summarize a document                    |
-| Prompt            | `format`                    | Reformat a document as clean Markdown   |
+## End-to-end flow
 
-See [docs/architecture.md](docs/architecture.md) for the design and diagram.
+```text
+Angular UI
+   ↓ HTTP
+FastAPI bridge
+   ↓ MCP Client
+MCPServer 2.x
+   ↓
+Resources / Tools / Prompts
+   ↓
+DocumentStore
+```
+
+## MCP surface
+
+| Primitive | Identifier | Purpose |
+| --- | --- | --- |
+| Resource | `docs://documents` | JSON index of documents |
+| Resource template | `docs://documents/{doc_id}` | Read one document |
+| Tool | `edit_document` | Replace one exact passage |
+| Prompt | `summarize` | Render a summary instruction |
+| Prompt | `format` | Render a Markdown-formatting instruction |
 
 ## Repository layout
 
+```text
+backend/
+  src/document_workspace/
+    server.py     MCP server
+    bridge.py     MCP client adapter
+    api.py        FastAPI HTTP bridge
+    store.py      document domain/store
+frontend/
+  src/app/
+    workspace-api.service.ts
+    app.ts / app.html / app.scss
+docs/
+  architecture.md
 ```
-backend/    Python package: MCP server, document store, tests
-frontend/   Angular standalone app (SCSS, routing)
-docs/       Architecture notes
-```
 
-## Prerequisites
+## Run locally
 
-- Python 3.11+
-- Node.js 20.19+, 22.12+ or 24+
+Backend:
 
-## Backend
-
-```bash
+```powershell
 cd backend
 python -m venv .venv
-# Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
+.\.venv\Scripts\Activate.ps1
 pip install -e ".[dev]"
-
-pytest                 # run the tests
-document-workspace     # start the MCP server on stdio
+document-workspace-api
 ```
 
-To explore the server interactively with the MCP Inspector:
+The HTTP bridge runs on `http://127.0.0.1:8000`.
 
-```bash
-npx @modelcontextprotocol/inspector document-workspace
-```
+Frontend:
 
-## Frontend
-
-```bash
+```powershell
 cd frontend
 npm install
-npm start              # http://localhost:4200
+npm start
+```
+
+Open `http://localhost:4200`.
+
+## Verify
+
+Backend:
+
+```powershell
+pytest
+ruff check .
+```
+
+Frontend:
+
+```powershell
 npm run build
 npm test -- --watch=false --browsers=ChromeHeadless
 ```
 
-## Roadmap
+The standalone MCP server can still be explored directly:
 
-Phase 2: an HTTP API with an MCP client in the backend, the frontend wired to
-it (document list, viewer, prompts, edit, activity log), and Docker setup.
+```powershell
+document-workspace
+npx @modelcontextprotocol/inspector document-workspace
+```
+
+## Current behavior
+
+The document list and document content are loaded through MCP Resources. Editing calls the MCP `edit_document` Tool. Summarize and Format retrieve the server-defined MCP Prompts and display the rendered prompt in the UI.
+
+No model API key is required in this project. Executing those prompts with Claude is intentionally a later extension, so the MCP concepts remain visible and independently testable.
+
+## Next phase
+
+- Docker setup
+- GitHub Actions CI
+- screenshots and demo GIF
+- optional Claude API execution for rendered prompts
+- final portfolio polish
