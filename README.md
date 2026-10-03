@@ -2,9 +2,9 @@
 
 A compact portfolio application that demonstrates Model Context Protocol primitives through a real Angular-to-MCP workflow.
 
-The Python backend exposes documents as MCP resources, a safe edit tool, and reusable prompts. A FastAPI bridge owns an MCP client, and the Angular frontend consumes that bridge over HTTP.
+The Python backend exposes documents as MCP Resources, a safe edit Tool, and reusable Prompts. A FastAPI bridge owns an MCP Client, and the Angular frontend consumes that bridge over HTTP.
 
-**Status: phase 2 complete.** The frontend now reads and edits real MCP-backed data.
+**Status: portfolio-ready core complete.**
 
 ![MCP Document Workspace](docs/assets/workspace.png)
 
@@ -47,6 +47,8 @@ frontend/
     app.ts / app.html / app.scss
 docs/
   architecture.md
+.github/workflows/
+  ci.yml
 ```
 
 ## Run locally
@@ -61,8 +63,6 @@ pip install -e ".[dev]"
 document-workspace-api
 ```
 
-The HTTP bridge runs on `http://127.0.0.1:8000`.
-
 Frontend:
 
 ```powershell
@@ -72,6 +72,14 @@ npm start
 ```
 
 Open `http://localhost:4200`.
+
+## Run with Docker
+
+```powershell
+docker compose up --build
+```
+
+Then open `http://localhost:4200`. The backend is exposed on `http://localhost:8000`.
 
 ## Verify
 
@@ -89,22 +97,24 @@ npm run build
 npm test -- --watch=false --browsers=ChromeHeadless
 ```
 
-The standalone MCP server can still be explored directly:
+The standalone MCP server can also be explored directly:
 
 ```powershell
 document-workspace
 npx @modelcontextprotocol/inspector document-workspace
 ```
 
+GitHub Actions runs the backend tests/lint and frontend build/tests on pushes to `main` and on pull requests.
+
 ## Current behavior
 
-The document list and document content are loaded through MCP Resources. Editing calls the MCP `edit_document` Tool. Summarize and Format retrieve the server-defined MCP Prompts and display the rendered prompt in the UI.
+The document list and document content are loaded through MCP Resources. Editing calls the MCP `edit_document` Tool. Summarize and Format retrieve server-defined MCP Prompts and display the rendered prompt in the UI.
 
-No model API key is required in this project. Executing those prompts with Claude is intentionally a later extension, so the MCP concepts remain visible and independently testable.
+No model API key is required. Prompt retrieval and model execution are intentionally separate so the MCP concepts stay visible and independently testable.
 
-## Next phase
+## Optional extensions
 
-- Docker setup
-- optional Claude API execution for rendered prompts
+- execute rendered prompts with the Claude API
+- persistent document storage
+- authentication
 - demo GIF
-- final portfolio polish
