@@ -6,6 +6,8 @@ The Python backend exposes documents as MCP resources, a safe edit tool, and reu
 
 **Status: phase 2 complete.** The frontend now reads and edits real MCP-backed data.
 
+![MCP Document Workspace](docs/assets/workspace.png)
+
 ## End-to-end flow
 
 ```text
@@ -103,7 +105,6 @@ No model API key is required in this project. Executing those prompts with Claud
 ## Next phase
 
 - Docker setup
-- GitHub Actions CI
-- screenshots and demo GIF
 - optional Claude API execution for rendered prompts
+- demo GIF
 - final portfolio polish
