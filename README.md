@@ -8,6 +8,8 @@ The Python backend exposes documents as MCP Resources, a safe edit Tool, and reu
 
 ![MCP Document Workspace](docs/assets/workspace.png)
 
+For a guided explanation of how each MCP concept maps to the code, see [docs/learning-map.md](docs/learning-map.md).
+
 ## End-to-end flow
 
 ```text
