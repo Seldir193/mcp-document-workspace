@@ -25,6 +25,7 @@ dev = [
 [project.scripts]
 document-workspace = "document_workspace.__main__:main"
 document-workspace-api = "document_workspace.api_main:main"
+document-workspace-demo = "document_workspace.demo_client:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/document_workspace"]
