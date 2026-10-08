@@ -1,11 +1,6 @@
-"""Run the document workspace MCP server over stdio."""
+"""Package entry point for the MCP document workspace server."""
 
-from document_workspace.server import create_server
-
-
-def main() -> None:
-    create_server().run(transport="stdio")
-
+from document_workspace.serve import main
 
 if __name__ == "__main__":
     main()
